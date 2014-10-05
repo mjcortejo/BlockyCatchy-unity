@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\BlockColliderManagerScript.cs" />
      <Compile Include="Assets\Scripts\FallerScript.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
   </ItemGroup>

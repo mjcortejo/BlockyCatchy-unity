@@ -3,8 +3,9 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
 
-    public GameObject block1;
-    public GameObject block2;
+    protected GameObject block1;
+    protected GameObject block2;
+    protected GameObject fallerblock;
     private GameObject leftSpawn;
     private GameObject rightSpawn;
     private float leftRange;
@@ -16,6 +17,7 @@ public class GameController : MonoBehaviour {
         //Manual initialization of game objects because if public, these bastards show up in the child clas
         block1 = GameObject.Find("Block1");
         block2 = GameObject.Find("Block2");
+        fallerblock = (GameObject)Resources.Load("Prefabs/Fallers");
         leftSpawn = GameObject.Find("LeftSpawnRange");
         rightSpawn = GameObject.Find("RightSpawnRange");
         //Align y coordinates of two spawner ranges
@@ -31,17 +33,22 @@ public class GameController : MonoBehaviour {
     {
         Block1Controller();
         Block2Controller();
+        SpawnBlocks();
+        ChangeBlockColorOnInterval();
+        //KeyClick();
 	}
-    void KeyClick()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            ChangeBlockColor();
-        }
-    }
     float changeColorTimer = 0;
     public float changeColorInterval;
-    void ChangeBlockColor()
+    void ChangeBlockColorOnInterval()
+    {
+        changeColorTimer += Time.deltaTime;
+        if (changeColorTimer >= changeColorInterval)
+        {
+            ChangeBlockColor();
+            changeColorTimer = 0;
+        }
+    }
+    private void ChangeBlockColor()
     {
         bool isTheSame = true;
         while (isTheSame)
@@ -95,16 +102,23 @@ public class GameController : MonoBehaviour {
         }
         return v;
     }
+    float spawnTimer = 0;
+    float spawnIntervalTimer = 1;
     void SpawnBlocks()
     {
-        //Get distance range of both spawner objects
-        //Spawn random position based on both spawner objects
-        float randPos = Random.Range(leftRange, rightRange);
-        //Instantiate new spawning position'
-        Vector2 spawnPos = new Vector2(randPos, leftSpawn.transform.position.y);
+        spawnTimer += Time.deltaTime;
+        if (spawnTimer >= spawnIntervalTimer)
+        {
+            //Spawn random position based on both spawner objects
+            float randPos = Random.Range(leftRange, rightRange);
+            //Instantiate new spawning position'
+            Vector2 spawnPos = new Vector2(randPos, leftSpawn.transform.position.y);
+            Instantiate(fallerblock, spawnPos, gameObject.transform.rotation);
+            spawnTimer = 0;
+        }
     }
     Color blockColor;
-    public Color GetColor(int index)
+    private Color GetColor(int index)
     {
         switch (index)
         {

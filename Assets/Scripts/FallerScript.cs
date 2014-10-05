@@ -6,13 +6,16 @@ public class FallerScript : GameController {
 	// Use this for initialization
 	void Start () 
     {
+        block1 = GameObject.Find("Block1");
+        block2 = GameObject.Find("Block2");
         GetColor(Random.Range(0, 2));
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-        KeyClick();
+        //KeyClick();
+        FallMovement();
 	}
     void KeyClick()
     {
@@ -34,5 +37,9 @@ public class FallerScript : GameController {
             default:
                 break;
         }
+    }
+    private void FallMovement()
+    {
+        rigidbody2D.velocity = new Vector2(0, -moveSpeed);
     }
 }
