@@ -3,15 +3,13 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
 
-    private GameObject block1;
-    private GameObject block2;
+    public GameObject block1;
+    public GameObject block2;
     private GameObject leftSpawn;
     private GameObject rightSpawn;
-    float leftRange;
-    float rightRange;
+    private float leftRange;
+    private float rightRange;
     public int moveSpeed;
-    //Block colors stored here
-    public Color[] blockcolors;
 	// Use this for initialization
 	void Start () 
     {
@@ -20,11 +18,8 @@ public class GameController : MonoBehaviour {
         block2 = GameObject.Find("Block2");
         leftSpawn = GameObject.Find("LeftSpawnRange");
         rightSpawn = GameObject.Find("RightSpawnRange");
-        blockcolors = new Color[2];
-        blockcolors[0] = block1.GetComponent<SpriteRenderer>().color;//gets color for the first block
-        blockcolors[1] = block2.GetComponent<SpriteRenderer>().color;//gets color for the 2nd block
-        //Debug.Log("Left Spawn X: " + leftSpawn.transform.position.x);
-        //Debug.Log("Right Spawn X: " + rightSpawn.transform.position.x);
+        //Align y coordinates of two spawner ranges
+        leftSpawn.transform.position = new Vector2(leftSpawn.transform.position.x, rightSpawn.transform.position.y);
         //Get the coordinates between two spawner ranges
         leftRange = leftSpawn.transform.position.x;
         rightRange = rightSpawn.transform.position.x;
@@ -37,14 +32,33 @@ public class GameController : MonoBehaviour {
         Block1Controller();
         Block2Controller();
 	}
+    void KeyClick()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ChangeBlockColor();
+        }
+    }
     float changeColorTimer = 0;
     public float changeColorInterval;
     void ChangeBlockColor()
     {
-        int colorIndex = Random.Range(0, 5);
-        block1.GetComponent<SpriteRenderer>().color = GetColor(colorIndex);
-        colorIndex = Random.Range(0, 5);
-        block2.GetComponent<SpriteRenderer>().color = GetColor(colorIndex);
+        bool isTheSame = true;
+        while (isTheSame)
+        {
+            int colorIndex1 = Random.Range(0, 5);
+            int colorIndex2 = Random.Range(0, 5);
+            if (colorIndex1 == colorIndex2)
+            {
+                isTheSame = true;
+            }
+            else
+            {
+                isTheSame = false;
+                block1.GetComponent<SpriteRenderer>().color = GetColor(colorIndex1);
+                block2.GetComponent<SpriteRenderer>().color = GetColor(colorIndex2);
+            }
+        }
     }
     void Block1Controller()
     {
@@ -85,8 +99,9 @@ public class GameController : MonoBehaviour {
     {
         //Get distance range of both spawner objects
         //Spawn random position based on both spawner objects
-        float spawnPos = Random.Range(leftRange, rightRange);
-        //Instantiate new spawning position
+        float randPos = Random.Range(leftRange, rightRange);
+        //Instantiate new spawning position'
+        Vector2 spawnPos = new Vector2(randPos, leftSpawn.transform.position.y);
     }
     Color blockColor;
     public Color GetColor(int index)
